@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.Map;
 
 @RestController
@@ -35,7 +36,8 @@ public class RagController {
     public ResponseEntity<Map<String, Object>> provider() {
         return ResponseEntity.ok(Map.of(
                 "provider", ragService.getProvider(),
-                "ready", ragService.isApiKeyLoaded()
+                "ready", ragService.isApiKeyLoaded(),
+                "timestamp", Instant.now().toString()
         ));
     }
 
