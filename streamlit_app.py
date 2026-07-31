@@ -136,6 +136,16 @@ st.markdown("""
 
 # --- Sidebar: Document Upload ---
 with st.sidebar:
+    try:
+        provider_info = requests.get(f"{API_URL}/provider", timeout=3).json()
+        status_class = "status-ok" if provider_info.get("ready") else "status-err"
+        st.markdown(
+            f'<div class="{status_class}">Provider: {provider_info.get("provider", "unknown")}</div>',
+            unsafe_allow_html=True,
+        )
+    except requests.exceptions.RequestException:
+        st.markdown('<div class="status-err">Backend is not running.</div>', unsafe_allow_html=True)
+
     st.markdown('<div class="main-title">Documents</div>', unsafe_allow_html=True)
     st.markdown('<div class="sub-title">Upload files to build your knowledge base</div>', unsafe_allow_html=True)
 
