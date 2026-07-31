@@ -31,7 +31,7 @@ A Retrieval-Augmented Generation (RAG) system built with Java Spring Boot and Go
 | Backend Framework   | Spring Boot 3.2.5                   |
 | Language            | Java 25                             |
 | RAG Framework       | LangChain4j 1.0.0-beta1            |
-| LLM                 | Google Gemini / OpenAI / Ollama (local) |
+| LLM                 | Google Gemini / OpenAI / Ollama (local) / Anthropic Claude |
 | Embeddings          | Provider-matched embedding model    |
 | Document Parsing    | Apache Tika                         |
 | Vector Store        | In-Memory Embedding Store           |
@@ -60,7 +60,7 @@ A Retrieval-Augmented Generation (RAG) system built with Java Spring Boot and Go
    cd java-rag
    ```
 
-2. **Create a `.env` file** in the project root, choosing an LLM provider with `LLM_PROVIDER` (`gemini`, `openai`, or `ollama`):
+2. **Create a `.env` file** in the project root (copy `.env.example`), choosing an LLM provider with `LLM_PROVIDER` (`gemini`, `openai`, `ollama`, or `anthropic`):
 
    **Gemini (default)**
    ```
@@ -82,6 +82,13 @@ A Retrieval-Augmented Generation (RAG) system built with Java Spring Boot and Go
    OLLAMA_BASE_URL=http://localhost:11434
    OLLAMA_CHAT_MODEL=llama3.1
    OLLAMA_EMBEDDING_MODEL=nomic-embed-text
+   ```
+
+   **Anthropic Claude** (embeddings run locally via all-MiniLM-L6-v2, since Anthropic has no embeddings API)
+   ```
+   LLM_PROVIDER=anthropic
+   ANTHROPIC_API_KEY=your_anthropic_api_key_here
+   ANTHROPIC_CHAT_MODEL=claude-sonnet-4-5
    ```
 
 3. **Install Python dependencies**
@@ -110,6 +117,8 @@ A Retrieval-Augmented Generation (RAG) system built with Java Spring Boot and Go
 | POST   | `/api/rag/upload`    | Upload a file            |
 | POST   | `/api/rag/load-path` | Load file from disk path |
 | POST   | `/api/rag/ask`       | Ask a question           |
+| GET    | `/api/rag/health`    | Backend + provider status |
+| GET    | `/api/rag/provider`  | Active LLM provider info |
 
 ## Project Structure
 
