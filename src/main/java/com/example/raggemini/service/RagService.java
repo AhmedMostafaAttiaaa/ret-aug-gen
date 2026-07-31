@@ -65,6 +65,10 @@ public class RagService {
         String chat(String userMessage);
     }
 
+    public String getProvider() {
+        return provider;
+    }
+
     public boolean isApiKeyLoaded() {
         return switch (provider) {
             case "openai" -> openAiApiKey != null && !openAiApiKey.isEmpty();

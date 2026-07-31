@@ -27,7 +27,16 @@ public class RagController {
 
     @GetMapping("/health")
     public ResponseEntity<String> health() {
-        return ResponseEntity.ok("Backend is running. API key loaded: " + ragService.isApiKeyLoaded());
+        return ResponseEntity.ok("Backend is running. Provider: " + ragService.getProvider()
+                + ". API key loaded: " + ragService.isApiKeyLoaded());
+    }
+
+    @GetMapping("/provider")
+    public ResponseEntity<Map<String, Object>> provider() {
+        return ResponseEntity.ok(Map.of(
+                "provider", ragService.getProvider(),
+                "ready", ragService.isApiKeyLoaded()
+        ));
     }
 
     @PostMapping("/upload")
