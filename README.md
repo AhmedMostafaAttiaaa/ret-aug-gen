@@ -31,8 +31,8 @@ A Retrieval-Augmented Generation (RAG) system built with Java Spring Boot and Go
 | Backend Framework   | Spring Boot 3.2.5                   |
 | Language            | Java 17                             |
 | RAG Framework       | LangChain4j 1.0.0-beta1            |
-| LLM                 | Google Gemini 1.5 Flash             |
-| Embeddings          | Google text-embedding-004           |
+| LLM                 | Google Gemini / OpenAI / Ollama (local) |
+| Embeddings          | Provider-matched embedding model    |
 | Document Parsing    | Apache Tika                         |
 | Vector Store        | In-Memory Embedding Store           |
 | Frontend            | Streamlit (Python)                  |
@@ -60,9 +60,28 @@ A Retrieval-Augmented Generation (RAG) system built with Java Spring Boot and Go
    cd java-rag
    ```
 
-2. **Create a `.env` file** in the project root:
+2. **Create a `.env` file** in the project root, choosing an LLM provider with `LLM_PROVIDER` (`gemini`, `openai`, or `ollama`):
+
+   **Gemini (default)**
    ```
+   LLM_PROVIDER=gemini
    GEMINI_API_KEY=your_gemini_api_key_here
+   ```
+
+   **OpenAI** (or any OpenAI-compatible API — set `OPENAI_BASE_URL` to point elsewhere)
+   ```
+   LLM_PROVIDER=openai
+   OPENAI_API_KEY=your_openai_api_key_here
+   OPENAI_CHAT_MODEL=gpt-4o-mini
+   OPENAI_EMBEDDING_MODEL=text-embedding-3-small
+   ```
+
+   **Ollama** (local models, no API key — requires `ollama serve` running)
+   ```
+   LLM_PROVIDER=ollama
+   OLLAMA_BASE_URL=http://localhost:11434
+   OLLAMA_CHAT_MODEL=llama3.1
+   OLLAMA_EMBEDDING_MODEL=nomic-embed-text
    ```
 
 3. **Install Python dependencies**

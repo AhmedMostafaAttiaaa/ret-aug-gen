@@ -37,6 +37,20 @@
 			<version>${langchain4j.version}</version>
 		</dependency>
 
+		<!-- Langchain4j OpenAI (also used for OpenAI-compatible APIs) -->
+		<dependency>
+			<groupId>dev.langchain4j</groupId>
+			<artifactId>langchain4j-open-ai</artifactId>
+			<version>${langchain4j.version}</version>
+		</dependency>
+
+		<!-- Langchain4j Ollama (local models) -->
+		<dependency>
+			<groupId>dev.langchain4j</groupId>
+			<artifactId>langchain4j-ollama</artifactId>
+			<version>${langchain4j.version}</version>
+		</dependency>
+
 		<!-- Langchain4j Apache Tika for parsing various document types -->
 		<dependency>
 			<groupId>dev.langchain4j</groupId>
