@@ -3,8 +3,10 @@ package com.example.raggemini.service;
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
+import dev.langchain4j.model.anthropic.AnthropicChatModel;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
+import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2EmbeddingModel;
 import dev.langchain4j.model.googleai.GoogleAiEmbeddingModel;
 import dev.langchain4j.model.googleai.GoogleAiGeminiChatModel;
 import dev.langchain4j.model.ollama.OllamaChatModel;
@@ -50,6 +52,11 @@ public class RagService {
     @Value("${ollama.embedding-model}")
     private String ollamaEmbeddingModel;
 
+    @Value("${anthropic.api-key}")
+    private String anthropicApiKey;
+    @Value("${anthropic.chat-model}")
+    private String anthropicChatModel;
+
     private InMemoryEmbeddingStore<TextSegment> embeddingStore;
     private EmbeddingModel embeddingModel;
     private Assistant assistant;
@@ -62,6 +69,7 @@ public class RagService {
         return switch (provider) {
             case "openai" -> openAiApiKey != null && !openAiApiKey.isEmpty();
             case "ollama" -> true; // no API key required for local Ollama
+            case "anthropic" -> anthropicApiKey != null && !anthropicApiKey.isEmpty();
             default -> geminiApiKey != null && !geminiApiKey.isEmpty() && !"your_gemini_api_key_here".equals(geminiApiKey);
         };
     }
@@ -109,6 +117,15 @@ public class RagService {
                             .baseUrl(ollamaBaseUrl)
                             .modelName(ollamaEmbeddingModel)
                             .build();
+                }
+                case "anthropic" -> {
+                    chatModel = AnthropicChatModel.builder()
+                            .apiKey(anthropicApiKey)
+                            .modelName(anthropicChatModel)
+                            .build();
+
+                    // Anthropic has no embeddings API; embed locally instead.
+                    embeddingModel = new AllMiniLmL6V2EmbeddingModel();
                 }
                 default -> {
                     chatModel = GoogleAiGeminiChatModel.builder()

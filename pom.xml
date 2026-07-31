@@ -51,6 +51,20 @@
 			<version>${langchain4j.version}</version>
 		</dependency>
 
+		<!-- Langchain4j Anthropic Claude -->
+		<dependency>
+			<groupId>dev.langchain4j</groupId>
+			<artifactId>langchain4j-anthropic</artifactId>
+			<version>${langchain4j.version}</version>
+		</dependency>
+
+		<!-- Local embedding model (Anthropic has no embeddings API, so this backs the "anthropic" chat provider) -->
+		<dependency>
+			<groupId>dev.langchain4j</groupId>
+			<artifactId>langchain4j-embeddings-all-minilm-l6-v2</artifactId>
+			<version>${langchain4j.version}</version>
+		</dependency>
+
 		<!-- Langchain4j Apache Tika for parsing various document types -->
 		<dependency>
 			<groupId>dev.langchain4j</groupId>
