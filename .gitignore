@@ -31,6 +31,11 @@ build/
 ### VS Code ###
 .vscode/
 
+### Python ###
+__pycache__/
+*.pyc
+.streamlit/
+
 ### Custom Secrets and Files ###
 .env
 COMMANDS.md
