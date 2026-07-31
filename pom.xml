@@ -14,7 +14,7 @@
 	<name>rag-gemini</name>
 	<description>RAG Project with Gemini API</description>
 	<properties>
-		<java.version>17</java.version>
+		<java.version>25</java.version>
 		<langchain4j.version>1.0.0-beta1</langchain4j.version>
 	</properties>
 	<dependencies>

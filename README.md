@@ -7,7 +7,7 @@ A Retrieval-Augmented Generation (RAG) system built with Java Spring Boot and Go
 ```
 ┌─────────────────────┐         HTTP/REST         ┌──────────────────────────┐
 │   Streamlit UI      │ ◄──────────────────────►  │   Spring Boot Backend    │
-│   (Python)          │      localhost:8080        │   (Java 17)              │
+│   (Python)          │      localhost:8080        │   (Java 25)              │
 │   Port: 8501        │                           │                          │
 └─────────────────────┘                           │  ┌────────────────────┐  │
                                                   │  │  Apache Tika       │  │
@@ -29,7 +29,7 @@ A Retrieval-Augmented Generation (RAG) system built with Java Spring Boot and Go
 | Component           | Technology                          |
 |---------------------|-------------------------------------|
 | Backend Framework   | Spring Boot 3.2.5                   |
-| Language            | Java 17                             |
+| Language            | Java 25                             |
 | RAG Framework       | LangChain4j 1.0.0-beta1            |
 | LLM                 | Google Gemini / OpenAI / Ollama (local) |
 | Embeddings          | Provider-matched embedding model    |
@@ -48,7 +48,7 @@ A Retrieval-Augmented Generation (RAG) system built with Java Spring Boot and Go
 
 ## Prerequisites
 
-- Java 17 (OpenJDK recommended)
+- Java 25 (OpenJDK recommended)
 - Python 3.8+
 - A Google Gemini API key ([Get one here](https://aistudio.google.com/apikey))
 
