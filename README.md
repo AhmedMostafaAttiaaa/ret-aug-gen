@@ -1,5 +1,8 @@
 # Java RAG with Gemini API
 
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Java](https://img.shields.io/badge/java-17-orange.svg)
+
 A Retrieval-Augmented Generation (RAG) system built with Java Spring Boot and Google Gemini API. Upload documents (PDF, CSV, XLSX, TXT, DOCX) and ask questions about their content using natural language.
 
 ## Architecture
