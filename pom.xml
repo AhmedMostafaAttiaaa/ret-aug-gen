@@ -13,6 +13,8 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>rag-gemini</name>
 	<description>RAG Project with Gemini API</description>
+	<url>https://github.com/AhmedMostafaAttiaaa/ret-aug-gen</url>
+	<inceptionYear>2026</inceptionYear>
 	<properties>
 		<java.version>25</java.version>
 		<langchain4j.version>1.0.0-beta1</langchain4j.version>
