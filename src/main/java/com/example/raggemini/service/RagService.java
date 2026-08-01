@@ -29,6 +29,8 @@ import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.Set;
 
 @Service
@@ -66,6 +68,9 @@ public class RagService {
     private String anthropicApiKey;
     @Value("${anthropic.chat-model}")
     private String anthropicChatModel;
+
+    @Value("${embedding-store.path}")
+    private String embeddingStorePath;
 
     private InMemoryEmbeddingStore<TextSegment> embeddingStore;
     private EmbeddingModel embeddingModel;
@@ -110,7 +115,13 @@ public class RagService {
         }
 
         try {
-            embeddingStore = new InMemoryEmbeddingStore<>();
+            File storeFile = new File(embeddingStorePath);
+            if (storeFile.exists()) {
+                embeddingStore = InMemoryEmbeddingStore.fromFile(storeFile.toPath());
+                System.out.println("Loaded persisted embedding store from " + embeddingStorePath);
+            } else {
+                embeddingStore = new InMemoryEmbeddingStore<>();
+            }
 
             ChatLanguageModel chatModel;
             StreamingChatLanguageModel streamingChatModel;
@@ -220,6 +231,7 @@ public class RagService {
                 .build();
 
         ingestor.ingest(document);
+        embeddingStore.serializeToFile(Path.of(embeddingStorePath));
     }
 
     public String ask(String question) {

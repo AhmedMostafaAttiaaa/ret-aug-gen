@@ -37,7 +37,7 @@ A Retrieval-Augmented Generation (RAG) system built with Java Spring Boot and Go
 | LLM                 | Google Gemini / OpenAI / Ollama (local) / Anthropic Claude |
 | Embeddings          | Provider-matched embedding model    |
 | Document Parsing    | Apache Tika                         |
-| Vector Store        | In-Memory Embedding Store           |
+| Vector Store        | In-Memory Embedding Store (persisted to disk) |
 | Frontend            | Streamlit (Python)                  |
 | Build Tool          | Maven                               |
 
