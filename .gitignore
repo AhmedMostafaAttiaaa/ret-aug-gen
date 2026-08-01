@@ -36,6 +36,11 @@ __pycache__/
 *.pyc
 .streamlit/
 
+### OS / logs ###
+.DS_Store
+Thumbs.db
+*.log
+
 ### Custom Secrets and Files ###
 .env
 COMMANDS.md
