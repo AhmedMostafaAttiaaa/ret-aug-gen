@@ -4,18 +4,24 @@ import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.anthropic.AnthropicChatModel;
+import dev.langchain4j.model.anthropic.AnthropicStreamingChatModel;
 import dev.langchain4j.model.chat.ChatLanguageModel;
+import dev.langchain4j.model.chat.StreamingChatLanguageModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2EmbeddingModel;
 import dev.langchain4j.model.googleai.GoogleAiEmbeddingModel;
 import dev.langchain4j.model.googleai.GoogleAiGeminiChatModel;
+import dev.langchain4j.model.googleai.GoogleAiGeminiStreamingChatModel;
 import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.model.ollama.OllamaEmbeddingModel;
+import dev.langchain4j.model.ollama.OllamaStreamingChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.model.openai.OpenAiEmbeddingModel;
+import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
 import dev.langchain4j.rag.content.retriever.ContentRetriever;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
 import dev.langchain4j.service.AiServices;
+import dev.langchain4j.service.TokenStream;
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,9 +70,14 @@ public class RagService {
     private InMemoryEmbeddingStore<TextSegment> embeddingStore;
     private EmbeddingModel embeddingModel;
     private Assistant assistant;
+    private StreamingAssistant streamingAssistant;
 
     interface Assistant {
         String chat(String userMessage);
+    }
+
+    interface StreamingAssistant {
+        TokenStream chat(String userMessage);
     }
 
     public String getProvider() {
@@ -102,15 +113,21 @@ public class RagService {
             embeddingStore = new InMemoryEmbeddingStore<>();
 
             ChatLanguageModel chatModel;
+            StreamingChatLanguageModel streamingChatModel;
             switch (provider) {
                 case "openai" -> {
                     var chatBuilder = OpenAiChatModel.builder()
                             .apiKey(openAiApiKey)
                             .modelName(openAiChatModel);
+                    var streamingBuilder = OpenAiStreamingChatModel.builder()
+                            .apiKey(openAiApiKey)
+                            .modelName(openAiChatModel);
                     if (openAiBaseUrl != null && !openAiBaseUrl.isEmpty()) {
                         chatBuilder.baseUrl(openAiBaseUrl);
+                        streamingBuilder.baseUrl(openAiBaseUrl);
                     }
                     chatModel = chatBuilder.build();
+                    streamingChatModel = streamingBuilder.build();
 
                     var embeddingBuilder = OpenAiEmbeddingModel.builder()
                             .apiKey(openAiApiKey)
@@ -126,6 +143,11 @@ public class RagService {
                             .modelName(ollamaChatModel)
                             .build();
 
+                    streamingChatModel = OllamaStreamingChatModel.builder()
+                            .baseUrl(ollamaBaseUrl)
+                            .modelName(ollamaChatModel)
+                            .build();
+
                     embeddingModel = OllamaEmbeddingModel.builder()
                             .baseUrl(ollamaBaseUrl)
                             .modelName(ollamaEmbeddingModel)
@@ -137,11 +159,21 @@ public class RagService {
                             .modelName(anthropicChatModel)
                             .build();
 
+                    streamingChatModel = AnthropicStreamingChatModel.builder()
+                            .apiKey(anthropicApiKey)
+                            .modelName(anthropicChatModel)
+                            .build();
+
                     // Anthropic has no embeddings API; embed locally instead.
                     embeddingModel = new AllMiniLmL6V2EmbeddingModel();
                 }
                 default -> {
                     chatModel = GoogleAiGeminiChatModel.builder()
+                            .apiKey(geminiApiKey)
+                            .modelName(geminiChatModel)
+                            .build();
+
+                    streamingChatModel = GoogleAiGeminiStreamingChatModel.builder()
                             .apiKey(geminiApiKey)
                             .modelName(geminiChatModel)
                             .build();
@@ -162,6 +194,14 @@ public class RagService {
 
             assistant = AiServices.builder(Assistant.class)
                     .chatLanguageModel(chatModel)
+                    .chatMemory(MessageWindowChatMemory.withMaxMessages(10))
+                    .contentRetriever(contentRetriever)
+                    .build();
+
+            // Separate chat memory from the non-streaming assistant above, since the two
+            // are independent conversational threads (REST ask vs. SSE stream endpoints).
+            streamingAssistant = AiServices.builder(StreamingAssistant.class)
+                    .streamingChatLanguageModel(streamingChatModel)
                     .chatMemory(MessageWindowChatMemory.withMaxMessages(10))
                     .contentRetriever(contentRetriever)
                     .build();
@@ -187,5 +227,12 @@ public class RagService {
             return "Assistant is not initialized properly. Check your configured LLM provider and API key.";
         }
         return assistant.chat(question);
+    }
+
+    public TokenStream askStream(String question) {
+        if (streamingAssistant == null) {
+            throw new IllegalStateException("Assistant is not initialized properly. Check your configured LLM provider and API key.");
+        }
+        return streamingAssistant.chat(question);
     }
 }

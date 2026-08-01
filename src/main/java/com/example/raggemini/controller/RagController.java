@@ -6,6 +6,7 @@ import dev.langchain4j.data.document.Document;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.File;
 import java.io.IOException;
@@ -96,7 +97,7 @@ public class RagController {
         if (question == null || question.trim().isEmpty()) {
             return ResponseEntity.badRequest().body("Question cannot be empty");
         }
-        
+
         try {
             String answer = ragService.ask(question);
             return ResponseEntity.ok(answer);
@@ -104,5 +105,35 @@ public class RagController {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("Error calling Gemini: " + e.getClass().getSimpleName() + " - " + e.getMessage());
         }
+    }
+
+    @PostMapping("/ask-stream")
+    public SseEmitter askStream(@RequestBody Map<String, String> payload) {
+        SseEmitter emitter = new SseEmitter(0L);
+        String question = payload.get("question");
+
+        if (question == null || question.trim().isEmpty()) {
+            try {
+                emitter.send(SseEmitter.event().name("error").data("Question cannot be empty"));
+                emitter.complete();
+            } catch (IOException e) {
+                emitter.completeWithError(e);
+            }
+            return emitter;
+        }
+
+        ragService.askStream(question)
+                .onPartialResponse(token -> {
+                    try {
+                        emitter.send(SseEmitter.event().name("token").data(token));
+                    } catch (IOException e) {
+                        emitter.completeWithError(e);
+                    }
+                })
+                .onCompleteResponse(response -> emitter.complete())
+                .onError(emitter::completeWithError)
+                .start();
+
+        return emitter;
     }
 }
