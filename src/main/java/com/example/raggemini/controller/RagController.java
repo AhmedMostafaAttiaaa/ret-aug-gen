@@ -93,7 +93,7 @@ public class RagController {
     @PostMapping("/ask")
     public ResponseEntity<String> ask(@RequestBody Map<String, String> payload) {
         String question = payload.get("question");
-        if (question == null || question.isEmpty()) {
+        if (question == null || question.trim().isEmpty()) {
             return ResponseEntity.badRequest().body("Question cannot be empty");
         }
         
