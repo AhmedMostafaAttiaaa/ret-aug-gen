@@ -23,8 +23,12 @@ import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
 
+import java.util.Set;
+
 @Service
 public class RagService {
+
+    private static final Set<String> KNOWN_PROVIDERS = Set.of("gemini", "openai", "ollama", "anthropic");
 
     @Value("${llm.provider}")
     private String provider;
@@ -83,6 +87,11 @@ public class RagService {
         System.out.println("=== RAG SERVICE INIT ===");
         System.out.println("LLM provider: " + provider);
         System.out.println("Ready: " + isApiKeyLoaded());
+
+        if (!KNOWN_PROVIDERS.contains(provider)) {
+            throw new IllegalStateException("Unknown llm.provider '" + provider
+                    + "'. Expected one of " + KNOWN_PROVIDERS + ".");
+        }
 
         if (!isApiKeyLoaded()) {
             System.err.println("WARNING: No API key configured for provider '" + provider + "'. Check your .env file.");
