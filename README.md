@@ -143,4 +143,4 @@ java-rag/
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE) for details.
