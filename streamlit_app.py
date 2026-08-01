@@ -190,17 +190,34 @@ for msg in st.session_state.messages:
 # Input
 question = st.text_input("Ask a question...")
 
+def stream_answer(question, placeholder):
+    answer = ""
+    with requests.post(f"{API_URL}/ask-stream", json={"question": question}, stream=True) as response:
+        response.raise_for_status()
+        event = None
+        for raw_line in response.iter_lines(decode_unicode=True):
+            if raw_line is None or raw_line == "":
+                continue
+            if raw_line.startswith("event:"):
+                event = raw_line[len("event:"):].strip()
+            elif raw_line.startswith("data:"):
+                data = raw_line[len("data:"):].strip()
+                if event == "error":
+                    return f"Error: {data}"
+                answer += data
+                placeholder.markdown(f'<div class="assistant-msg">{answer}</div>', unsafe_allow_html=True)
+    return answer
+
+
 if st.button("Send"):
     if question:
         st.session_state.messages.append({"role": "user", "content": question})
-        with st.spinner(""):
-            try:
-                response = requests.post(f"{API_URL}/ask", json={"question": question})
-                if response.status_code == 200:
-                    answer = response.text
-                else:
-                    answer = f"Error: {response.text}"
-            except requests.exceptions.ConnectionError:
-                answer = "Backend is not running. Start Spring Boot first."
+        placeholder = st.empty()
+        try:
+            answer = stream_answer(question, placeholder)
+        except requests.exceptions.ConnectionError:
+            answer = "Backend is not running. Start Spring Boot first."
+        except requests.exceptions.RequestException as e:
+            answer = f"Error: {e}"
         st.session_state.messages.append({"role": "assistant", "content": answer})
         st.rerun()
