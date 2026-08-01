@@ -23,7 +23,7 @@ public class DocumentService {
 
     public List<TextSegment> chunkDocument(Document document, String technique) {
         DocumentSplitter splitter;
-        switch (technique.toLowerCase()) {
+        switch (technique == null ? "token" : technique.toLowerCase()) {
             case "paragraph":
                 splitter = DocumentSplitters.recursive(1000, 100);
                 break;
