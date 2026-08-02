@@ -46,7 +46,8 @@ A Retrieval-Augmented Generation (RAG) system built with Java Spring Boot and Go
 - **Multi-format document upload**: PDF, CSV, XLSX, TXT, DOCX
 - **Multiple chunking strategies**: Token-based, paragraph-based, sentence-based
 - **RAG pipeline**: Document ingestion, embedding, retrieval, and generation
-- **Chat interface**: Conversational Q&A with chat memory (10 messages)
+- **Chat interface**: Conversational Q&A with chat memory (10 messages), with streamed responses
+- **Persistent storage**: Uploaded document embeddings survive a backend restart
 - **REST API**: Full API for programmatic access
 
 ## Prerequisites
