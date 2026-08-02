@@ -73,8 +73,12 @@ public class RagController {
         String path = payload.get("path");
         String chunkingTechnique = payload.getOrDefault("chunking", "token");
 
+        if (path == null || path.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Path cannot be empty");
+        }
+
         try {
-            Path filePath = Path.of(path);
+            Path filePath = Path.of(path.trim());
             if (!Files.exists(filePath)) {
                 return ResponseEntity.badRequest().body("File not found at path: " + path);
             }
