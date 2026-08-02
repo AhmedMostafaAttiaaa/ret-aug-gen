@@ -120,6 +120,7 @@ A Retrieval-Augmented Generation (RAG) system built with Java Spring Boot and Go
 | POST   | `/api/rag/upload`    | Upload a file            |
 | POST   | `/api/rag/load-path` | Load file from disk path |
 | POST   | `/api/rag/ask`       | Ask a question           |
+| POST   | `/api/rag/ask-stream` | Ask a question, streamed via SSE |
 | GET    | `/api/rag/health`    | Backend + provider status |
 | GET    | `/api/rag/provider`  | Active LLM provider info |
 
