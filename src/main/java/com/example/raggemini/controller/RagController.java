@@ -46,7 +46,7 @@ public class RagController {
     public ResponseEntity<String> uploadFile(
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "chunking", defaultValue = "token") String chunkingTechnique) {
-        
+
         try {
             Path tempDir = Files.createTempDirectory("rag_uploads");
             File tempFile = new File(tempDir.toFile(), file.getOriginalFilename());
@@ -58,9 +58,9 @@ public class RagController {
             tempFile.delete();
             tempDir.toFile().delete();
 
-            return ResponseEntity.ok("Successfully uploaded and processed " + file.getOriginalFilename() 
+            return ResponseEntity.ok("Successfully uploaded and processed " + file.getOriginalFilename()
                     + " using " + chunkingTechnique + " technique.");
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("Failed to process file: " + e.getMessage());
@@ -72,19 +72,19 @@ public class RagController {
             @RequestBody Map<String, String> payload) {
         String path = payload.get("path");
         String chunkingTechnique = payload.getOrDefault("chunking", "token");
-        
+
         try {
             Path filePath = Path.of(path);
             if (!Files.exists(filePath)) {
                 return ResponseEntity.badRequest().body("File not found at path: " + path);
             }
-            
+
             Document document = documentService.loadDocument(filePath);
             ragService.ingestDocument(document);
-            
-            return ResponseEntity.ok("Successfully loaded and processed file from path using " 
+
+            return ResponseEntity.ok("Successfully loaded and processed file from path using "
                     + chunkingTechnique + " technique.");
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("Failed to process file: " + e.getMessage());
