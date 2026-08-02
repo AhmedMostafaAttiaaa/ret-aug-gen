@@ -47,6 +47,10 @@ public class RagController {
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "chunking", defaultValue = "token") String chunkingTechnique) {
 
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("Uploaded file is empty");
+        }
+
         try {
             Path tempDir = Files.createTempDirectory("rag_uploads");
             File tempFile = new File(tempDir.toFile(), file.getOriginalFilename());
