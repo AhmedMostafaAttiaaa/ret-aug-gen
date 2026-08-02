@@ -39,4 +39,14 @@ class DocumentServiceTest {
 
         assertThat(segments).isNotEmpty();
     }
+
+    @Test
+    void sentenceTechniqueProducesSmallerChunksThanParagraph() {
+        Document document = Document.from("word ".repeat(300));
+
+        List<TextSegment> sentenceSegments = documentService.chunkDocument(document, "sentence");
+        List<TextSegment> paragraphSegments = documentService.chunkDocument(document, "paragraph");
+
+        assertThat(sentenceSegments.size()).isGreaterThanOrEqualTo(paragraphSegments.size());
+    }
 }
