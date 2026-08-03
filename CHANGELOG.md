@@ -7,3 +7,5 @@
 - Added streaming responses via `/api/rag/ask-stream`, consumed by the Streamlit UI.
 - Persisted the embedding store to disk so uploads survive a backend restart.
 - Added unit and MockMvc tests for `DocumentService` and `RagController`.
+- Rejects empty file uploads and blank/whitespace-only paths and questions instead of failing later.
+- Made the HTTP port configurable via `SERVER_PORT`.
