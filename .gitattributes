@@ -1,6 +1,8 @@
 * text=auto eol=lf
 
 *.bat text eol=crlf
+*.md text
+*.json text
 *.jar binary
 *.png binary
 *.jpg binary
