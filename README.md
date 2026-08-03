@@ -125,6 +125,12 @@ A Retrieval-Augmented Generation (RAG) system built with Java Spring Boot and Go
 | GET    | `/api/rag/health`    | Backend + provider status |
 | GET    | `/api/rag/provider`  | Active LLM provider info |
 
+## Testing
+
+```bash
+.\maven\apache-maven-3.9.6\bin\mvn test
+```
+
 ## Project Structure
 
 ```
